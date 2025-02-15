@@ -3,7 +3,8 @@ class Property < ApplicationRecord
   belongs_to :agent
   belongs_to :location
 
-  has_many :amenities
+  has_many :property_amenities
+  has_many :amenities, through: :property_amenities
   has_many :listings
   has_many :reviews
   has_many :bookings
@@ -20,7 +21,8 @@ class Property < ApplicationRecord
   end
 
   def add_amenity(amenity_name)
-    amenities.find_or_create_by(name: amenity_name)
+    amenity = Amenity.find_or_create_by(name: amenity_name)
+    PropertyAmenityService.add_amenity_to_property(self, amenity)
   end
 
   def average_rating
