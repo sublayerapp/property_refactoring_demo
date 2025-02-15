@@ -1,0 +1,25 @@
+name: product_model_coupling_check
+
+on:
+  pull_request:
+    paths:
+      - "**/*.rb"
+
+jobs:
+  product_model_coupling_check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.2.0
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.2
+      - name: Install dependencies
+        run: |
+          gem install sublayer octokit
+      - name: Run product_model_coupling_check
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: ruby .github/workflows/product_model_coupling_check/product_model_coupling_check.rb
