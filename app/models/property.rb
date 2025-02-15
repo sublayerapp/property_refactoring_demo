@@ -13,7 +13,7 @@ class Property < ApplicationRecord
 
   scope :by_city, ->(city) { joins(:location).where(locations: { city: city }) }
   scope :by_price_range, ->(min, max) { joins(:listings).where(listings: { price: min..max }) }
-  scope :with_amenity, ->(amenity_name) { joins(:amenities).where(amenities: { name: amenity_name }) }
+  scope :with_amenity, ->(amenity_name) { PropertyAmenityService.properties_with_amenity(amenity_name) }
   scope :top_rated, -> { joins(:reviews).group('properties.id').order('AVG(reviews.rating) DESC') }
 
   def book(user, start_date, end_date)
