@@ -32,7 +32,7 @@ class Property < ApplicationRecord
   end
 
   def add_image(url)
-    images.create(url: url)
+    ImageService.add_image(self, url)
   end
 
   def add_document(file_name)
