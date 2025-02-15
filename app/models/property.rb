@@ -3,7 +3,8 @@ class Property < ApplicationRecord
   belongs_to :agent
   belongs_to :location
 
-  has_many :amenities
+  has_many :property_amenities
+  has_many :amenities, through: :property_amenities
   has_many :listings
   has_many :reviews
   has_many :bookings
@@ -12,7 +13,7 @@ class Property < ApplicationRecord
 
   scope :by_city, ->(city) { joins(:location).where(locations: { city: city }) }
   scope :by_price_range, ->(min, max) { joins(:listings).where(listings: { price: min..max }) }
-  scope :with_amenity, ->(amenity_name) { joins(:amenities).where(amenities: { name: amenity_name }) }
+  scope :with_amenity, ->(amenity_name) { PropertyAmenityService.properties_with_amenity(amenity_name) }
   scope :top_rated, -> { joins(:reviews).group('properties.id').order('AVG(reviews.rating) DESC') }
 
   def book(user, start_date, end_date)
@@ -20,7 +21,8 @@ class Property < ApplicationRecord
   end
 
   def add_amenity(amenity_name)
-    amenities.find_or_create_by(name: amenity_name)
+    amenity = Amenity.find_or_create_by(name: amenity_name)
+    PropertyAmenityService.add_amenity_to_property(self, amenity)
   end
 
   def average_rating
