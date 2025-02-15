@@ -36,6 +36,6 @@ class Property < ApplicationRecord
   end
 
   def add_document(file_name)
-    documents.create(file_name: file_name)
+    DocumentService.add_document(self, file_name)
   end
 end
