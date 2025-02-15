@@ -11,7 +11,6 @@ class Property < ApplicationRecord
   has_many :documents
 
   scope :by_city, ->(city) { joins(:location).where(locations: { city: city }) }
-  scope :by_price_range, ->(min, max) { joins(:listings).where(listings: { price: min..max }) }
   scope :with_amenity, ->(amenity_name) { joins(:amenities).where(amenities: { name: amenity_name }) }
   scope :top_rated, -> { joins(:reviews).group('properties.id').order('AVG(reviews.rating) DESC') }
 
